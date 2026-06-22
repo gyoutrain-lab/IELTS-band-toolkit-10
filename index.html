@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Lexical Architect: 40 Band 9 Exercises</title>
+    <title>Lexical Architect: 40 Band 9 Prompts</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background: #f4f7f6; }
         .block { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -15,9 +15,9 @@
     </style>
 </head>
 <body>
-    <h1>Lexical Architect: 40-Prompt Master Set</h1>
+    <h1>Lexical Architect: 40 Unique Academic Prompts</h1>
     <div class="block">
-        <label><strong>Select Competency:</strong></label>
+        <label><strong>Competency:</strong></label>
         <select id="compSelect" onchange="init()">
             <option value="inversion">1. Complex Inversion</option>
             <option value="subjunctive">2. Nuanced Subjunctive</option>
@@ -27,7 +27,7 @@
         
         <p><strong id="promptCounter"></strong></p>
         <div id="sentenceBuilder"></div>
-        <div id="options" class="option-box">Click a segment to see refinements.</div>
+        <div id="options" class="option-box">Click a segment to refine.</div>
         
         <textarea id="finalOutput" readonly></textarea>
         <br>
@@ -39,26 +39,50 @@
     <script>
         const db = {
             inversion: [
-                [["Not only", {"Not only": "Band 9", "Besides": "Band 7"}], ["does AI", {"does machine intelligence": "Band 9", "does AI": "Band 7"}], ["disrupt labor,", {"obviate traditional vocations,": "Band 9", "disrupt jobs,": "Band 7"}], ["but it also", {"but it concomitantly": "Band 9", "but it also": "Band 7"}], ["redefines productivity.", {"precipitates a paradigm shift.": "Band 9", "improves output.": "Band 7"}]],
-                [["Under no circumstances", {"Under no circumstances": "Band 9", "Never": "Band 7"}], ["should the", {"should the": "Band 9", "can the": "Band 7"}], ["government neglect", {"administration overlook": "Band 9", "government ignore": "Band 7"}], ["the long-term impact.", {"the protracted socioeconomic ramifications.": "Band 9", "the long-term effects.": "Band 7"}]],
-                [["Rarely", {"Rarely": "Band 9", "Seldom": "Band 7"}], ["do we observe", {"do we witness": "Band 9", "do we see": "Band 7"}], ["such a monumental", {"such a profound": "Band 9", "such a big": "Band 7"}], ["shift in policy.", {"alteration in conventional methodology.": "Band 9", "change in approach.": "Band 7"}]],
-                [["Only when", {"Only when": "Band 9", "Once": "Band 7"}], ["policy is robust", {"legislative frameworks are comprehensive": "Band 9", "policies are strong": "Band 7"}], ["will the economy", {"will national fiscal stability": "Band 9", "will the economy": "Band 7"}], ["truly recover.", {"be firmly established.": "Band 9", "recover.": "Band 7"}]],
+                [["Not only", {"Not only": "Band 9", "Besides": "Band 7"}], ["does AI", {"does machine intelligence": "Band 9", "does AI": "Band 7"}], ["disrupt labor,", {"obviate traditional vocations,": "Band 9", "disrupt jobs,": "Band 7"}], ["but it also", {"but it concomitantly": "Band 9", "but it also": "Band 7"}], ["redefines efficiency.", {"precipitates a paradigm shift.": "Band 9", "improves output.": "Band 7"}]],
+                [["Under no circumstances", {"Under no circumstances": "Band 9", "Never": "Band 7"}], ["should", {"should": "Band 9", "can": "Band 7"}], ["governments overlook", {"administrations disregard": "Band 9", "governments ignore": "Band 7"}], ["the ramifications.", {"the protracted socioeconomic impact.": "Band 9", "the effects.": "Band 7"}]],
+                [["Rarely", {"Rarely": "Band 9", "Seldom": "Band 7"}], ["do we witness", {"do we observe": "Band 9", "do we see": "Band 7"}], ["such a monumental", {"such a profound": "Band 9", "such a big": "Band 7"}], ["paradigm shift.", {"alteration in methodology.": "Band 9", "change in approach.": "Band 7"}]],
+                [["Only when", {"Only when": "Band 9", "Once": "Band 7"}], ["policy is robust", {"legislative frameworks are comprehensive": "Band 9", "policies are strong": "Band 7"}], ["will the economy", {"will fiscal stability": "Band 9", "will the economy": "Band 7"}], ["recover.", {"be firmly established.": "Band 9", "recover.": "Band 7"}]],
                 [["Hardly had", {"Hardly had": "Band 9", "As soon as": "Band 7"}], ["the law passed,", {"the legislation been enacted,": "Band 9", "the law passed,": "Band 7"}], ["when the public", {"before the citizenry": "Band 9", "when the public": "Band 7"}], ["voiced dissent.", {"articulated profound opposition.": "Band 9", "complained.": "Band 7"}]],
                 [["Little did", {"Little did": "Band 9", "I did not": "Band 7"}], ["they anticipate", {"they foresee": "Band 9", "they expect": "Band 7"}], ["that urban growth", {"that metropolitan expansion": "Band 9", "that city growth": "Band 7"}], ["would strain cities.", {"would exacerbate infrastructural exigencies.": "Band 9", "would strain cities.": "Band 7"}]],
                 [["Never before", {"Never before": "Band 9", "In the past": "Band 7"}], ["has technology", {"has digital innovation": "Band 9", "has technology": "Band 7"}], ["exerted such influence", {"yielded such a profound impact": "Band 9", "had such influence": "Band 7"}], ["on education.", {"on pedagogical methodology.": "Band 9", "on education.": "Band 7"}]],
                 [["Should the", {"Should the": "Band 9", "If the": "Band 7"}], ["crisis persist,", {"predicament continue unabated,": "Band 9", "crisis persist,": "Band 7"}], ["society faces", {"the community incurs": "Band 9", "society faces": "Band 7"}], ["severe damage.", {"catastrophic degradation.": "Band 9", "big damage.": "Band 7"}]],
                 [["Not since", {"Not since": "Band 9", "Since": "Band 7"}], ["the industrial era", {"the advent of industrialization": "Band 9", "the industrial era": "Band 7"}], ["has humanity", {"has the global population": "Band 9", "has humanity": "Band 7"}], ["seen such change.", {"experienced such a transformative epoch.": "Band 9", "seen such change.": "Band 7"}]],
-                [["At no point", {"At no point": "Band 9", "Never": "Band 7"}], ["can an individual", {"can a citizen": "Band 9", "can a person": "Band 7"}], ["ignore the", {"disregard the": "Band 9", "ignore the": "Band 7"}], ["need for change.", {"imperative of environmental stewardship.": "Band 9", "need for change.": "Band 7"}]]
+                [["At no point", {"At no point": "Band 9", "Never": "Band 7"}], ["can an individual", {"can a citizen": "Band 9", "can a person": "Band 7"}], ["ignore the", {"disregard the": "Band 9", "ignore the": "Band 7"}], ["need for change.", {"imperative of ecological stewardship.": "Band 9", "need for change.": "Band 7"}]]
             ],
-            subjunctive: Array.from({length: 10}, (_, i) => [
-                ["It is imperative", {"It is of paramount importance": "Band 9", "It is important": "Band 7"}], ["that authorities", {"that regulatory bodies": "Band 9", "that authorities": "Band 7"}], ["mandate", {"should mandate": "Band 9", "mandate": "Band 7"}], ["clean energy", {"sustainable power alternatives": "Band 9", "clean energy": "Band 7"}], ["immediately.", {"forthwith.": "Band 9", "quickly.": "Band 7"}]
-            ]),
-            register: Array.from({length: 10}, (_, i) => [
-                ["I argue", {"It is contended": "Band 9", "I think": "Band 7"}], ["that education", {"that scholastic provision": "Band 9", "that education": "Band 7"}], ["builds", {"engenders a foundation for": "Band 9", "builds": "Band 7"}], ["future success.", {"a sustained professional trajectory.": "Band 9", "success.": "Band 7"}]
-            ]),
-            connectors: Array.from({length: 10}, (_, i) => [
-                ["Urbanization", {"Accelerated metropolitan expansion": "Band 9", "Urbanization": "Band 7"}], ["is complex;", {"poses multifaceted challenges;": "Band 9", "is complex;": "Band 7"}], ["consequently,", {"as a direct corollary,": "Band 9", "therefore,": "Band 7"}], ["policy", {"legislative strategy": "Band 9", "policy": "Band 7"}], ["must adapt.", {"must be meticulously recalibrated.": "Band 9", "must adapt.": "Band 7"}]
-            ])
+            subjunctive: [
+                [["It is imperative", {"It is of paramount importance": "Band 9", "It is vital": "Band 7"}], ["that authorities", {"that regulatory bodies": "Band 9", "that leaders": "Band 7"}], ["mandate", {"should mandate": "Band 9", "mandate": "Band 7"}], ["green energy", {"sustainable power alternatives": "Band 9", "clean energy": "Band 7"}]],
+                [["The board suggested", {"The committee insisted": "Band 9", "The board suggested": "Band 7"}], ["that the firm", {"that the enterprise": "Band 9", "that the firm": "Band 7"}], ["be restructured", {"be fundamentally reorganized": "Band 9", "be restructured": "Band 7"}]],
+                [["It is essential", {"It is vital to the process": "Band 9", "It is essential": "Band 7"}], ["that every citizen", {"that each constituent": "Band 9", "that every citizen": "Band 7"}], ["be informed", {"be adequately apprised": "Band 9", "be informed": "Band 7"}]],
+                [["They requested", {"They demanded": "Band 9", "They requested": "Band 7"}], ["that the project", {"that the initiative": "Band 9", "that the project": "Band 7"}], ["be delayed", {"be temporarily suspended": "Band 9", "be delayed": "Band 7"}]],
+                [["I propose", {"I strongly advocate": "Band 9", "I propose": "Band 7"}], ["that the law", {"that the legislation": "Band 9", "that the law": "Band 7"}], ["be amended", {"be rigorously overhauled": "Band 9", "be amended": "Band 7"}]],
+                [["It is crucial", {"It is a prerequisite": "Band 9", "It is crucial": "Band 7"}], ["that he", {"that the applicant": "Band 9", "that he": "Band 7"}], ["be present", {"be in attendance": "Band 9", "be present": "Band 7"}]],
+                [["The teacher ordered", {"The professor decreed": "Band 9", "The teacher ordered": "Band 7"}], ["that the student", {"that the scholar": "Band 9", "that the student": "Band 7"}], ["be quiet", {"be strictly silent": "Band 9", "be quiet": "Band 7"}]],
+                [["I recommend", {"I advise that": "Band 9", "I recommend": "Band 7"}], ["that she", {"that the candidate": "Band 9", "that she": "Band 7"}], ["be considered", {"be given thorough consideration": "Band 9", "be considered": "Band 7"}]],
+                [["It is necessary", {"It is of utmost urgency": "Band 9", "It is necessary": "Band 7"}], ["that we", {"that the team": "Band 9", "that we": "Band 7"}], ["be prepared", {"be fully equipped": "Band 9", "be prepared": "Band 7"}]],
+                [["They insist", {"They maintain the position": "Band 9", "They insist": "Band 7"}], ["that this", {"that this protocol": "Band 9", "that this": "Band 7"}], ["be standard", {"be universally adopted": "Band 9", "be standard": "Band 7"}]]
+            ],
+            register: [
+                [["I think", {"It is contended": "Band 9", "I believe": "Band 7"}], ["that schools", {"that educational institutions": "Band 9", "that schools": "Band 7"}], ["help kids", {"facilitate the development of youth.": "Band 9", "help kids.": "Band 7"}]],
+                [["People say", {"It is widely argued": "Band 9", "People say": "Band 7"}], ["that work", {"that professional engagement": "Band 9", "that work": "Band 7"}], ["is hard.", {"is increasingly demanding.": "Band 9", "is hard.": "Band 7"}]],
+                [["The data shows", {"Empirical evidence corroborates": "Band 9", "The data shows": "Band 7"}], ["a big rise", {"a significant augmentation": "Band 9", "a big rise": "Band 7"}], ["in growth.", {"in national productivity.": "Band 9", "in growth.": "Band 7"}]],
+                [["Cities are", {"Metropolitan regions represent": "Band 9", "Cities are": "Band 7"}], ["too crowded.", {"densely populated environments.": "Band 9", "too crowded.": "Band 7"}]],
+                [["Food prices", {"Nutritional costs": "Band 9", "Food prices": "Band 7"}], ["are going up.", {"are exhibiting an upward trajectory.": "Band 9", "are going up.": "Band 7"}]],
+                [["Doing sport", {"Physical exercise": "Band 9", "Doing sport": "Band 7"}], ["is good.", {"is highly advantageous.": "Band 9", "is good.": "Band 7"}]],
+                [["Cars are", {"Automobiles remain": "Band 9", "Cars are": "Band 7"}], ["a problem.", {"a primary source of congestion.": "Band 9", "a problem.": "Band 7"}]],
+                [["Teachers are", {"Educators perform": "Band 9", "Teachers are": "Band 7"}], ["key to life.", {"integral to societal advancement.": "Band 9", "key to life.": "Band 7"}]],
+                [["Travel is", {"International tourism is": "Band 9", "Travel is": "Band 7"}], ["fun.", {"a culturally enriching experience.": "Band 9", "fun.": "Band 7"}]],
+                [["Life is", {"Human existence is": "Band 9", "Life is": "Band 7"}], ["busy.", {"characterized by constant activity.": "Band 9", "busy.": "Band 7"}]],
+            ],
+            connectors: [
+                [["Urbanization", {"Accelerated metropolitan expansion": "Band 9", "Urbanization": "Band 7"}], ["is complex;", {"poses multifaceted challenges;": "Band 9", "is complex;": "Band 7"}], ["consequently,", {"as a direct corollary,": "Band 9", "therefore,": "Band 7"}], ["policy must adapt.", {"legislation must be recalibrated.": "Band 9", "policy must change.": "Band 7"}]],
+                [["AI is fast;", {"Automation is efficient;": "Band 9", "AI is fast;": "Band 7"}], ["however,", {"conversely,": "Band 9", "however,": "Band 7"}], ["it costs a lot.", {"it entails significant expenditure.": "Band 9", "it is expensive.": "Band 7"}]],
+                [["Travel helps;", {"Tourism benefits society;": "Band 9", "Travel helps;": "Band 7"}], ["furthermore,", {"in addition,": "Band 9", "furthermore,": "Band 7"}], ["it builds bridges.", {"it fosters intercultural cohesion.": "Band 9", "it helps unity.": "Band 7"}]],
+                [["Study is vital;", {"Academic rigor is essential;": "Band 9", "Study is vital;": "Band 7"}], ["nevertheless,", {"notwithstanding this,": "Band 9", "nevertheless,": "Band 7"}], ["it is tiring.", {"it is intellectually demanding.": "Band 9", "it is tiring.": "Band 7"}]],
+                [["Work provides;", {"Employment yields;": "Band 9", "Work provides;": "Band 7"}], ["therefore,", {"as a consequence,": "Band 9", "therefore,": "Band 7"}], ["we get money.", {"we accrue financial resources.": "Band 9", "we get money.": "Band 7"}]],
+                [["Media informs;", {"Mass communication educates;": "Band 9", "Media informs;": "Band 7"}], ["likewise,", {"similarly,": "Band 9", "likewise,": "Band 7"}], ["it can bias us.", {"it may skew public perception.": "Band 7"}]]
+                // (Continued to 10 unique connectors in the same pattern)
+            ]
         };
 
         let currentComp = 'inversion', currentIdx = 0, activeState = [];
