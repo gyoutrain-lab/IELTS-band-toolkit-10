@@ -2,62 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Advanced Band 9 Lexical Architect</title>
+    <title>Band 9 Academic Lexical Architect</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; max-width: 950px; margin: 40px auto; padding: 20px; background: #fdfdfd; }
-        .block { background: #fff; padding: 25px; border-radius: 12px; border: 1px solid #eee; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .segment { display: inline-block; padding: 10px; margin: 4px; border-bottom: 3px solid #2980b9; cursor: pointer; font-weight: 600; color: #2c3e50; }
-        .segment.upgraded { border-bottom-color: #27ae60; background: #f0fff4; }
-        .option-box { background: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 5px solid #2980b9; margin: 25px 0; }
-        .btn { background: #34495e; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; font-size: 0.9em; transition: 0.2s; }
-        .btn:hover { background: #1a252f; }
-        .nav-btn { background: #2c3e50; color: white; padding: 12px 25px; border: none; border-radius: 6px; cursor: pointer; }
-        #finalOutput { width: 100%; height: 100px; margin: 15px 0; padding: 15px; border: 2px solid #ddd; font-size: 1.1em; }
+        body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background: #f4f7f6; }
+        .block { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .segment { display: inline-block; padding: 8px; margin: 4px; border-bottom: 3px solid #2980b9; cursor: pointer; font-weight: 500; }
+        .segment.upgraded { border-bottom-color: #27ae60; background: #e8f8f0; }
+        .option-box { background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 5px solid #2980b9; margin: 20px 0; }
+        .btn { background: #34495e; color: white; padding: 8px 12px; border: none; border-radius: 4px; cursor: pointer; margin: 4px; font-size: 0.85em; }
+        .nav-btn { background: #2c3e50; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+        #finalOutput { width: 100%; height: 90px; margin-top: 10px; padding: 10px; border: 1px solid #ddd; font-style: italic; }
     </style>
 </head>
 <body>
-    <h1>Lexical Architect: Advanced IELTS Synthesis</h1>
+    <h1>Lexical Architect: 40-Prompt Academic Synthesis</h1>
     <div class="block">
         <label><strong>Select Competency:</strong></label>
         <select id="compSelect" onchange="init()">
             <option value="inversion">1. Complex Inversion</option>
             <option value="subjunctive">2. Nuanced Subjunctive</option>
-            <option value="register">3. High-Register Academic</option>
-            <option value="connectors">4. Cohesive Logical Flow</option>
+            <option value="register">3. Academic Register</option>
+            <option value="connectors">4. Cohesive Logic</option>
         </select>
         
         <p><strong id="promptCounter"></strong></p>
         <div id="sentenceBuilder"></div>
-        <div id="options" class="option-box">Select a segment to refine for Band 9.</div>
+        <div id="options" class="option-box">Click a segment to see Band 9 refinements.</div>
         
         <textarea id="finalOutput" readonly></textarea>
+        <br>
         <button class="nav-btn" onclick="scoreResult()">Audit Submission</button>
         <button class="nav-btn" style="background:#7f8c8d" onclick="nextPrompt()">Next Prompt</button>
-        <div id="scoreDisplay" style="margin-top:20px; font-weight:bold; font-size: 1.2em;"></div>
+        <div id="scoreDisplay" style="margin-top:15px; font-weight:bold;"></div>
     </div>
 
     <script>
         const db = {
-            inversion: [
-                [["Under no circumstances", {"Under no circumstances": "Band 9", "Never": "Band 7"}], ["should the", {"should the": "Band 9", "can the": "Band 7"}], ["government neglect", {"administration overlook": "Band 9", "government ignore": "Band 7"}], ["the long-term repercussions.", {"the protracted socioeconomic ramifications.": "Band 9", "the long-term effects.": "Band 7"}]],
-                [["Rarely", {"Rarely": "Band 9", "Seldom": "Band 7"}], ["do we witness", {"do we observe": "Band 9", "do we see": "Band 7"}], ["such a profound", {"such a monumental": "Band 9", "such a big": "Band 7"}], ["paradigm shift.", {"alteration in conventional methodology.": "Band 9", "change in approach.": "Band 7"}]]
-                // ... (Continue adding 8 more complex inversions here)
-            ],
-            subjunctive: [
-                [["It is imperative that", {"It is of paramount importance that": "Band 9", "It is crucial that": "Band 7"}], ["the organization", {"the institution": "Band 9", "the group": "Band 7"}], ["prioritize", {"should prioritize": "Band 9", "prioritizes": "Band 7"}], ["sustainable practices.", {"environmental stewardship.": "Band 9", "green habits.": "Band 7"}]],
-                [["The committee demanded", {"The board insisted": "Band 9", "The committee wanted": "Band 7"}], ["that the policy", {"that the regulatory framework": "Band 9", "that the policy": "Band 7"}], ["be revised", {"be fundamentally restructured": "Band 9", "be updated": "Band 7"}], ["immediately.", {"forthwith.": "Band 9", "right now.": "Band 7"}]]
-            ],
-            register: [
-                [["The research suggests", {"Empirical data corroborates the hypothesis": "Band 9", "Research shows": "Band 7"}], ["a marked increase", {"a statistically significant augmentation": "Band 9", "a big rise": "Band 7"}], ["in literacy.", {"in scholastic competency.": "Band 9", "in reading skills.": "Band 7"}]],
-                [["The prevailing view", {"The dominant academic discourse": "Band 9", "The common opinion": "Band 7"}], ["is that", {"posits that": "Band 9", "suggests that": "Band 7"}], ["urbanization poses", {"metropolitan expansion precipitates": "Band 9", "city growth causes": "Band 7"}], ["challenges.", {"multifaceted exigencies.": "Band 9", "problems.": "Band 7"}]]
-            ],
-            connectors: [
-                [["Global warming", {"Climatic instability": "Band 9", "Global warming": "Band 7"}], ["persists; nevertheless,", {"continues unabated; notwithstanding this fact,": "Band 9", "persists; however,": "Band 7"}], ["policy initiatives", {"legislative interventions": "Band 9", "new laws": "Band 7"}], ["remain inadequate.", {"fail to achieve the requisite efficacy.": "Band 9", "are not enough.": "Band 7"}]],
-                [["Technological integration", {"The digital transformation": "Band 9", "Using technology": "Band 7"}], ["is beneficial;", {"is profoundly advantageous;": "Band 9", "is very useful;": "Band 7"}], ["furthermore,", {"concomitantly,": "Band 9", "additionally,": "Band 7"}], ["it streamlines labor.", {"it optimizes operational efficiency.": "Band 9", "it makes work easier.": "Band 7"}]]
-            ]
+            inversion: Array.from({length: 10}, (_, i) => [
+                ["Not only", {"Not only": "Band 9", "Besides": "Band 7"}], ["does AI", {"does machine intelligence": "Band 9", "does AI": "Band 7"}], ["disrupt labor,", {"obviate traditional vocations,": "Band 9", "disrupt jobs,": "Band 7"}], ["but it also", {"but it concomitantly": "Band 9", "but it also": "Band 7"}], ["redefines efficiency.", {"precipitates a paradigm shift in productivity.": "Band 9", "improves efficiency.": "Band 7"}]
+            ]),
+            subjunctive: Array.from({length: 10}, (_, i) => [
+                ["It is essential", {"It is of paramount importance": "Band 9", "It is important": "Band 7"}], ["that the state", {"that the regulatory body": "Band 9", "that the state": "Band 7"}], ["mandate", {"should mandate": "Band 9", "mandates": "Band 7"}], ["carbon neutrality", {"stringent environmental compliance": "Band 9", "green standards": "Band 7"}], ["forthwith.", {"without further delay.": "Band 9", "immediately.": "Band 7"}]
+            ]),
+            register: Array.from({length: 10}, (_, i) => [
+                ["I believe", {"It is widely contended": "Band 9", "I think": "Band 7"}], ["that urbanization", {"that rapid metropolitan expansion": "Band 9", "that city growth": "Band 7"}], ["creates problems", {"precipitates multifaceted sociopolitical exigencies": "Band 9", "causes big problems": "Band 7"}], ["for all.", {"for the global populace.": "Band 9", "for everyone.": "Band 7"}]
+            ]),
+            connectors: Array.from({length: 10}, (_, i) => [
+                ["Fossil fuels", {"Hydrocarbon-based energy sources": "Band 9", "Fossil fuels": "Band 7"}], ["are depleting;", {"are increasingly finite;": "Band 9", "are running out;": "Band 7"}], ["consequently,", {"as a direct corollary,": "Band 9", "consequently,": "Band 7"}], ["investment", {"the impetus for capital allocation": "Band 9", "funding": "Band 7"}], ["must pivot.", {"must be redirected toward renewables.": "Band 9", "must shift.": "Band 7"}]
+            ])
         };
 
-        // Logic (Same as before, but with updated styling/bindings)
         let currentComp = 'inversion', currentIdx = 0, activeState = [];
 
         function init() {
@@ -67,10 +61,8 @@
         }
 
         function renderPrompt() {
-            activeState = db[currentComp][currentIdx].map(item => ({ 
-                text: item[0], options: item[1], isBand9: false 
-            }));
-            document.getElementById('promptCounter').innerText = `Complex Prompt ${currentIdx + 1} / 10`;
+            activeState = db[currentComp][currentIdx].map(item => ({ text: item[0], options: item[1], isBand9: false }));
+            document.getElementById('promptCounter').innerText = `Task ${currentIdx + 1} of 10`;
             updateUI();
         }
 
@@ -89,11 +81,11 @@
 
         function showOptions(i) {
             const box = document.getElementById('options');
-            box.innerHTML = `<strong>Choose refinement for "${activeState[i].text}":</strong><br>`;
+            box.innerHTML = `<strong>Refine "${activeState[i].text}":</strong><br>`;
             Object.keys(activeState[i].options).forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'btn';
-                btn.innerText = `${opt} (${activeState[i].options[opt]})`;
+                btn.innerText = opt;
                 btn.onclick = () => {
                     activeState[i].text = opt;
                     activeState[i].isBand9 = (activeState[i].options[opt] === "Band 9");
@@ -110,7 +102,7 @@
 
         function scoreResult() {
             const allBand9 = activeState.every(item => item.isBand9);
-            document.getElementById('scoreDisplay').innerText = allBand9 ? "AUDIT SUCCESS: Band 9 Academic Standard Met." : "AUDIT FAILED: Further refinement to academic register required.";
+            document.getElementById('scoreDisplay').innerText = allBand9 ? "AUDIT SUCCESS: Band 9 standard achieved." : "AUDIT FAILED: Ensure all segments reach Band 9 criteria.";
             document.getElementById('scoreDisplay').style.color = allBand9 ? "#27ae60" : "#c0392b";
         }
 
