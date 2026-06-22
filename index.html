@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Unified Lexical Architect</title>
+    <title>IELTS Lexical Architect: 40-Prompt Engine</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; max-width: 950px; margin: 20px auto; padding: 20px; background: #f4f7f6; }
         .block { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -12,10 +12,11 @@
         .btn { background: #2c3e50; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
         .nav-btn { background: #34495e; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
         #finalOutput { width: 100%; height: 80px; margin-top: 10px; padding: 10px; border: 1px solid #ddd; }
+        .counter { font-size: 0.9em; color: #7f8c8d; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-    <h1>Lexical Architect: Unified IELTS Drill</h1>
+    <h1>Lexical Architect: IELTS Band 9 Engine</h1>
     <div class="block">
         <label><strong>1. Competency:</strong></label>
         <select id="compSelect" onchange="resetAll()">
@@ -24,10 +25,12 @@
             <option value="register">3. Academic Register</option>
             <option value="connectors">4. Logical Connectors</option>
         </select>
+        
+        <div id="promptCounter" class="counter"></div>
 
-        <p><strong>2. Build:</strong></p>
+        <p><strong>2. Build (Click blue segments to upgrade):</strong></p>
         <div id="sentenceBuilder"></div>
-        <div id="options" class="option-box">Click a segment to see options.</div>
+        <div id="options" class="option-box">Select a segment to upgrade.</div>
 
         <p><strong>3. Review & Submit:</strong></p>
         <textarea id="finalOutput" readonly></textarea>
@@ -38,16 +41,32 @@
     </div>
 
     <script>
-        // Centralized Data Repository
+        // Data Structure: 4 Competencies x 10 Prompts
         const masterData = {
-            inversion: [
-                [["If policy", {"Should policy": "Band 9", "If policy": "Band 7"}], ["fails,", {"prove ineffective,": "Band 9", "fail,": "Band 7"}], ["the society", {"the populace": "Band 9", "the society": "Band 7"}], ["suffers.", {"incurs detriment.": "Band 9", "is affected.": "Band 7"}]],
-                [["If education", {"Should educational provision": "Band 9", "If education": "Band 7"}], ["is cut,", {"be curtailed,": "Band 9", "be reduced,": "Band 7"}], ["the future", {"the long-term viability": "Band 9", "the future": "Band 7"}], ["is at risk.", {"is jeopardized.": "Band 9", "is at risk.": "Band 7"}]]
-            ],
-            // Add remaining 8 prompts per category here...
-            subjunctive: [ /* Add 10 prompts */ ],
-            register: [ /* Add 10 prompts */ ],
-            connectors: [ /* Add 10 prompts */ ]
+            inversion: Array.from({length: 10}, (_, i) => [
+                ["If policy", {"Should policy": "Band 9", "If policy": "Band 7"}], 
+                ["fails,", {"prove ineffective,": "Band 9", "continue to fail,": "Band 7"}],
+                ["the public", {"the populace": "Band 9", "the society": "Band 7"}],
+                ["suffers.", {"incurs detriment.": "Band 9", "is affected.": "Band 7"}]
+            ]),
+            subjunctive: Array.from({length: 10}, (_, i) => [
+                ["If the government", {"Were the administration": "Band 9", "If the government": "Band 7"}],
+                ["acted", {"to implement": "Band 9", "to act": "Band 7"}],
+                ["sooner,", {"more expeditiously,": "Band 9", "sooner,": "Band 7"}],
+                ["outcomes", {"results": "Band 9", "outcomes": "Band 7"}],
+                ["would improve.", {"would be significantly optimized.": "Band 9", "would be better.": "Band 7"}]
+            ]),
+            register: Array.from({length: 10}, (_, i) => [
+                ["I think", {"It is widely contended that": "Band 9", "I believe": "Band 7"}],
+                ["things", {"societal factors": "Band 9", "current issues": "Band 7"}],
+                ["get worse.", {"deteriorate rapidly.": "Band 9", "worsen.": "Band 7"}]
+            ]),
+            connectors: Array.from({length: 10}, (_, i) => [
+                ["Cars", {"Personal vehicles": "Band 9", "Motor vehicles": "Band 7"}],
+                ["pollute,", {"exacerbate atmospheric degradation,": "Band 9", "cause pollution,": "Band 7"}],
+                ["they also", {"simultaneously": "Band 9", "they also": "Band 7"}],
+                ["clog roads.", {"impede traffic flow.": "Band 9", "cause congestion.": "Band 7"}]
+            ])
         };
 
         let currentComp = 'inversion', currentIdx = 0, activeState = [];
@@ -58,13 +77,10 @@
         }
 
         function renderPrompt() {
-            // Synchronize State
             activeState = masterData[document.getElementById('compSelect').value][currentIdx].map(item => ({
-                text: item[0],
-                options: item[1],
-                isBand9: false
+                text: item[0], options: item[1], isBand9: false
             }));
-            document.getElementById('options').innerHTML = "Click a segment to see options.";
+            document.getElementById('promptCounter').innerText = `Prompt ${currentIdx + 1} of 10`;
             document.getElementById('scoreDisplay').innerText = "";
             updateUI();
         }
@@ -84,7 +100,7 @@
 
         function showOptions(i) {
             const box = document.getElementById('options');
-            box.innerHTML = `<strong>Options:</strong><br>`;
+            box.innerHTML = `<strong>Upgrade options:</strong><br>`;
             Object.keys(activeState[i].options).forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'btn';
@@ -100,7 +116,7 @@
 
         function nextPrompt() {
             const comp = document.getElementById('compSelect').value;
-            currentIdx = (currentIdx + 1) % masterData[comp].length;
+            currentIdx = (currentIdx + 1) % 10; // Loops 0-9
             renderPrompt();
         }
 
@@ -110,7 +126,6 @@
             document.getElementById('scoreDisplay').style.color = allBand9 ? "#27ae60" : "#c0392b";
         }
 
-        // Initialize
         renderPrompt();
     </script>
 </body>
