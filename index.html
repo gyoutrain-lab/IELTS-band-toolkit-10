@@ -2,20 +2,20 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Integrated Band 9 Lexical Architect</title>
+    <title>Functional Band 9 Lexical Architect</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; max-width: 950px; margin: 20px auto; padding: 20px; background: #f4f7f6; }
         .block { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
         .segment { display: inline-block; padding: 8px; margin: 3px; border-bottom: 3px solid #3498db; cursor: pointer; color: #2c3e50; font-weight: 500; }
         .segment:hover { background: #eef7ff; }
-        .option-box { background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 4px solid #27ae60; margin: 20px 0; }
+        .option-box { background: #f9f9f9; padding: 15px; border-radius: 8px; border-left: 4px solid #27ae60; margin: 20px 0; min-height: 50px; }
         .btn { background: #2c3e50; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; margin: 5px; }
         .nav-btn { background: #34495e; color: white; padding: 12px 20px; border: none; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-        #finalOutput { width: 100%; height: 60px; margin-top: 10px; font-size: 1.1em; padding: 10px; border: 1px solid #ddd; }
+        #finalOutput { width: 100%; height: 80px; margin-top: 10px; font-size: 1.1em; padding: 10px; border: 1px solid #ddd; }
     </style>
 </head>
 <body>
-    <h1>Lexical Architect: IELTS Band 9 Drill</h1>
+    <h1>Lexical Architect: Interactive Band 9 Drill</h1>
     <div class="block">
         <label><strong>1. Competency:</strong></label>
         <select id="compSelect" onchange="loadNewPrompt()">
@@ -39,24 +39,20 @@
     </div>
 
     <script>
-        // Library structure: 15 prompts per competency
+        // Library initialized with functional data
         const data = {
             inversion: [
-                [["If clinical negligence", {"Should clinical malpractice": "Band 9"}], ["persists,", {"endure,": "Band 7"}], ["the hospital", {"the institution": "Band 9"}], ["faces", {"is subjected to": "Band 9"}], ["major lawsuits.", {"severe litigious repercussions.": "Band 9"}]],
-                [["If modern training", {"Should pedagogical innovation": "Band 9"}], ["is ignored,", {"be neglected,": "Band 7"}], ["the care standard", {"the clinical quality": "Band 9"}], ["falls.", {"is compromised.": "Band 9"}]],
-                // ... (Truncated for space, you can add up to 15 items here)
+                [["If clinical negligence", {"Should clinical malpractice": "Band 9"}], ["persists,", {"endure,": "Band 9"}], ["the hospital", {"the institution": "Band 9"}], ["faces", {"is subjected to": "Band 9"}], ["major lawsuits.", {"severe litigious repercussions.": "Band 9"}]],
+                [["If modern training", {"Should pedagogical innovation": "Band 9"}], ["is ignored,", {"be neglected,": "Band 9"}], ["the care standard", {"the clinical quality": "Band 9"}], ["falls.", {"is compromised.": "Band 9"}]]
             ],
             subjunctive: [
-                [["If the hospital", {"Were the medical facility": "Band 9"}], ["had", {"to be endowed with": "Band 9"}], ["enough budget,", {"adequate fiscal resources,": "Band 9"}], ["the crisis", {"the systemic exigency": "Band 9"}], ["would end.", {"would be alleviated.": "Band 9"}]],
-                [["If staff", {"Were the clinical personnel": "Band 9"}], ["were motivated,", {"adequately incentivized,": "Band 9"}], ["productivity", {"operational throughput": "Band 9"}], ["would rise.", {"would be optimized.": "Band 9"}]],
+                [["If the hospital", {"Were the medical facility": "Band 9"}], ["had", {"to be endowed with": "Band 9"}], ["enough budget,", {"adequate fiscal resources,": "Band 9"}], ["the crisis", {"the systemic exigency": "Band 9"}], ["would end.", {"would be alleviated.": "Band 9"}]]
             ],
             register: [
-                [["The nurse", {"The healthcare practitioner": "Band 9"}], ["did a lot", {"undertook rigorous intervention": "Band 9"}], ["to help", {"to facilitate": "Band 9"}], ["the patient.", {"the subject's recovery.": "Band 9"}]],
-                [["The hospital", {"The clinical facility": "Band 9"}], ["is good at", {"demonstrates proficiency in": "Band 9"}], ["making things go right.", {"optimizing patient outcomes.": "Band 9"}]],
+                [["The nurse", {"The healthcare practitioner": "Band 9"}], ["did a lot", {"undertook rigorous intervention": "Band 9"}], ["to help", {"to facilitate": "Band 9"}], ["the patient.", {"the subject's recovery.": "Band 9"}]]
             ],
             connectors: [
-                [["Automation", {"Technological automation": "Band 9"}], ["replaces labor,", {"supplants manual work,"}], ["it also", {"furthermore,"}], ["raises issues.", {"precipitates ethical dilemmas."}]],
-                [["Medical tourism", {"Global medical tourism": "Band 9"}], ["is increasing,", {"is expanding exponentially,"}], ["a source of revenue.", {"a lucrative mechanism for capital."}]],
+                [["Automation", {"Technological automation": "Band 9"}], ["replaces labor,", {"supplants manual work,"}], ["it also", {"furthermore,"}], ["raises issues.", {"precipitates ethical dilemmas."}]]
             ]
         };
 
@@ -71,6 +67,7 @@
         }
 
         function renderSentence() {
+            // Deep copy the selected prompt data
             activeSentence = JSON.parse(JSON.stringify(data[currentComp][currentIdx]));
             const builder = document.getElementById('sentenceBuilder');
             builder.innerHTML = '';
@@ -89,7 +86,11 @@
             const box = document.getElementById('options');
             box.innerHTML = `<strong>Upgrade "${activeSentence[i][0]}":</strong><br>`;
             for(let word in opts) {
-                box.innerHTML += `<button class="btn" onclick="replace(${i}, '${word}')">${word} (${opts[word]})</button>`;
+                const btn = document.createElement('button');
+                btn.className = 'btn';
+                btn.innerText = word + " (" + opts[word] + ")";
+                btn.onclick = () => replace(i, word);
+                box.appendChild(btn);
             }
         }
 
@@ -110,11 +111,13 @@
         function scoreResult() {
             const output = document.getElementById('finalOutput').value;
             const scoreDiv = document.getElementById('scoreDisplay');
-            const isBand9 = output.length > 50 && !output.includes('good') && !output.includes('helping');
-            scoreDiv.innerText = isBand9 ? "AUDIT RESULT: Band 9 (Masterful Construction)" : "AUDIT RESULT: Band 6 (Requires further lexical upgrades)";
+            // Check for presence of high-level terms (and absence of basic ones)
+            const isBand9 = output.length > 50 && !output.match(/good|did|help|things/i);
+            scoreDiv.innerText = isBand9 ? "AUDIT RESULT: Band 9 (Masterful Construction)" : "AUDIT RESULT: Band 6 (Incomplete: Please upgrade all segments)";
             scoreDiv.style.color = isBand9 ? "#27ae60" : "#c0392b";
         }
 
+        // Initialize on load
         loadNewPrompt();
     </script>
 </body>
