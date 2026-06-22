@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Band 9 Academic Lexical Architect</title>
+    <title>Lexical Architect: 40 Band 9 Exercises</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; background: #f4f7f6; }
         .block { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
@@ -15,7 +15,7 @@
     </style>
 </head>
 <body>
-    <h1>Lexical Architect: 40-Prompt Academic Synthesis</h1>
+    <h1>Lexical Architect: 40-Prompt Master Set</h1>
     <div class="block">
         <label><strong>Select Competency:</strong></label>
         <select id="compSelect" onchange="init()">
@@ -27,7 +27,7 @@
         
         <p><strong id="promptCounter"></strong></p>
         <div id="sentenceBuilder"></div>
-        <div id="options" class="option-box">Click a segment to see Band 9 refinements.</div>
+        <div id="options" class="option-box">Click a segment to see refinements.</div>
         
         <textarea id="finalOutput" readonly></textarea>
         <br>
@@ -38,17 +38,26 @@
 
     <script>
         const db = {
-            inversion: Array.from({length: 10}, (_, i) => [
-                ["Not only", {"Not only": "Band 9", "Besides": "Band 7"}], ["does AI", {"does machine intelligence": "Band 9", "does AI": "Band 7"}], ["disrupt labor,", {"obviate traditional vocations,": "Band 9", "disrupt jobs,": "Band 7"}], ["but it also", {"but it concomitantly": "Band 9", "but it also": "Band 7"}], ["redefines efficiency.", {"precipitates a paradigm shift in productivity.": "Band 9", "improves efficiency.": "Band 7"}]
-            ]),
+            inversion: [
+                [["Not only", {"Not only": "Band 9", "Besides": "Band 7"}], ["does AI", {"does machine intelligence": "Band 9", "does AI": "Band 7"}], ["disrupt labor,", {"obviate traditional vocations,": "Band 9", "disrupt jobs,": "Band 7"}], ["but it also", {"but it concomitantly": "Band 9", "but it also": "Band 7"}], ["redefines productivity.", {"precipitates a paradigm shift.": "Band 9", "improves output.": "Band 7"}]],
+                [["Under no circumstances", {"Under no circumstances": "Band 9", "Never": "Band 7"}], ["should the", {"should the": "Band 9", "can the": "Band 7"}], ["government neglect", {"administration overlook": "Band 9", "government ignore": "Band 7"}], ["the long-term impact.", {"the protracted socioeconomic ramifications.": "Band 9", "the long-term effects.": "Band 7"}]],
+                [["Rarely", {"Rarely": "Band 9", "Seldom": "Band 7"}], ["do we observe", {"do we witness": "Band 9", "do we see": "Band 7"}], ["such a monumental", {"such a profound": "Band 9", "such a big": "Band 7"}], ["shift in policy.", {"alteration in conventional methodology.": "Band 9", "change in approach.": "Band 7"}]],
+                [["Only when", {"Only when": "Band 9", "Once": "Band 7"}], ["policy is robust", {"legislative frameworks are comprehensive": "Band 9", "policies are strong": "Band 7"}], ["will the economy", {"will national fiscal stability": "Band 9", "will the economy": "Band 7"}], ["truly recover.", {"be firmly established.": "Band 9", "recover.": "Band 7"}]],
+                [["Hardly had", {"Hardly had": "Band 9", "As soon as": "Band 7"}], ["the law passed,", {"the legislation been enacted,": "Band 9", "the law passed,": "Band 7"}], ["when the public", {"before the citizenry": "Band 9", "when the public": "Band 7"}], ["voiced dissent.", {"articulated profound opposition.": "Band 9", "complained.": "Band 7"}]],
+                [["Little did", {"Little did": "Band 9", "I did not": "Band 7"}], ["they anticipate", {"they foresee": "Band 9", "they expect": "Band 7"}], ["that urban growth", {"that metropolitan expansion": "Band 9", "that city growth": "Band 7"}], ["would strain cities.", {"would exacerbate infrastructural exigencies.": "Band 9", "would strain cities.": "Band 7"}]],
+                [["Never before", {"Never before": "Band 9", "In the past": "Band 7"}], ["has technology", {"has digital innovation": "Band 9", "has technology": "Band 7"}], ["exerted such influence", {"yielded such a profound impact": "Band 9", "had such influence": "Band 7"}], ["on education.", {"on pedagogical methodology.": "Band 9", "on education.": "Band 7"}]],
+                [["Should the", {"Should the": "Band 9", "If the": "Band 7"}], ["crisis persist,", {"predicament continue unabated,": "Band 9", "crisis persist,": "Band 7"}], ["society faces", {"the community incurs": "Band 9", "society faces": "Band 7"}], ["severe damage.", {"catastrophic degradation.": "Band 9", "big damage.": "Band 7"}]],
+                [["Not since", {"Not since": "Band 9", "Since": "Band 7"}], ["the industrial era", {"the advent of industrialization": "Band 9", "the industrial era": "Band 7"}], ["has humanity", {"has the global population": "Band 9", "has humanity": "Band 7"}], ["seen such change.", {"experienced such a transformative epoch.": "Band 9", "seen such change.": "Band 7"}]],
+                [["At no point", {"At no point": "Band 9", "Never": "Band 7"}], ["can an individual", {"can a citizen": "Band 9", "can a person": "Band 7"}], ["ignore the", {"disregard the": "Band 9", "ignore the": "Band 7"}], ["need for change.", {"imperative of environmental stewardship.": "Band 9", "need for change.": "Band 7"}]]
+            ],
             subjunctive: Array.from({length: 10}, (_, i) => [
-                ["It is essential", {"It is of paramount importance": "Band 9", "It is important": "Band 7"}], ["that the state", {"that the regulatory body": "Band 9", "that the state": "Band 7"}], ["mandate", {"should mandate": "Band 9", "mandates": "Band 7"}], ["carbon neutrality", {"stringent environmental compliance": "Band 9", "green standards": "Band 7"}], ["forthwith.", {"without further delay.": "Band 9", "immediately.": "Band 7"}]
+                ["It is imperative", {"It is of paramount importance": "Band 9", "It is important": "Band 7"}], ["that authorities", {"that regulatory bodies": "Band 9", "that authorities": "Band 7"}], ["mandate", {"should mandate": "Band 9", "mandate": "Band 7"}], ["clean energy", {"sustainable power alternatives": "Band 9", "clean energy": "Band 7"}], ["immediately.", {"forthwith.": "Band 9", "quickly.": "Band 7"}]
             ]),
             register: Array.from({length: 10}, (_, i) => [
-                ["I believe", {"It is widely contended": "Band 9", "I think": "Band 7"}], ["that urbanization", {"that rapid metropolitan expansion": "Band 9", "that city growth": "Band 7"}], ["creates problems", {"precipitates multifaceted sociopolitical exigencies": "Band 9", "causes big problems": "Band 7"}], ["for all.", {"for the global populace.": "Band 9", "for everyone.": "Band 7"}]
+                ["I argue", {"It is contended": "Band 9", "I think": "Band 7"}], ["that education", {"that scholastic provision": "Band 9", "that education": "Band 7"}], ["builds", {"engenders a foundation for": "Band 9", "builds": "Band 7"}], ["future success.", {"a sustained professional trajectory.": "Band 9", "success.": "Band 7"}]
             ]),
             connectors: Array.from({length: 10}, (_, i) => [
-                ["Fossil fuels", {"Hydrocarbon-based energy sources": "Band 9", "Fossil fuels": "Band 7"}], ["are depleting;", {"are increasingly finite;": "Band 9", "are running out;": "Band 7"}], ["consequently,", {"as a direct corollary,": "Band 9", "consequently,": "Band 7"}], ["investment", {"the impetus for capital allocation": "Band 9", "funding": "Band 7"}], ["must pivot.", {"must be redirected toward renewables.": "Band 9", "must shift.": "Band 7"}]
+                ["Urbanization", {"Accelerated metropolitan expansion": "Band 9", "Urbanization": "Band 7"}], ["is complex;", {"poses multifaceted challenges;": "Band 9", "is complex;": "Band 7"}], ["consequently,", {"as a direct corollary,": "Band 9", "therefore,": "Band 7"}], ["policy", {"legislative strategy": "Band 9", "policy": "Band 7"}], ["must adapt.", {"must be meticulously recalibrated.": "Band 9", "must adapt.": "Band 7"}]
             ])
         };
 
@@ -81,7 +90,7 @@
 
         function showOptions(i) {
             const box = document.getElementById('options');
-            box.innerHTML = `<strong>Refine "${activeState[i].text}":</strong><br>`;
+            box.innerHTML = `<strong>Refinement:</strong><br>`;
             Object.keys(activeState[i].options).forEach(opt => {
                 const btn = document.createElement('button');
                 btn.className = 'btn';
@@ -102,7 +111,7 @@
 
         function scoreResult() {
             const allBand9 = activeState.every(item => item.isBand9);
-            document.getElementById('scoreDisplay').innerText = allBand9 ? "AUDIT SUCCESS: Band 9 standard achieved." : "AUDIT FAILED: Ensure all segments reach Band 9 criteria.";
+            document.getElementById('scoreDisplay').innerText = allBand9 ? "AUDIT SUCCESS: Band 9 Mastered!" : "AUDIT FAILED: Further refinement required.";
             document.getElementById('scoreDisplay').style.color = allBand9 ? "#27ae60" : "#c0392b";
         }
 
